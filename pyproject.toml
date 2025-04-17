@@ -1,0 +1,32 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "harsh_review_detector"
+version = "0.0.1"
+description = "Detecting guests who consistently give overly harsh reviews on the Nocarz booking platform."
+authors = [
+  { name = "Dominika Boguszewska Jedrzej Osiecki" },
+]
+license = { file = "LICENSE" }
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License"
+]
+requires-python = "~=3.13.0"
+
+
+[tool.ruff]
+line-length = 99
+src = ["harsh_review_detector"]
+include = ["pyproject.toml", "harsh_review_detector/**/*.py"]
+
+[tool.ruff.lint]
+extend-select = ["I"]  # Add import sorting
+
+[tool.ruff.lint.isort]
+known-first-party = ["harsh_review_detector"]
+force-sort-within-sections = true
+
