@@ -11,4 +11,5 @@ python-dotenv
 ruff
 scikit-learn
 zstandard
+seaborn
 -e .
