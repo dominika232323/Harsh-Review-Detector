@@ -12,4 +12,5 @@ ruff
 scikit-learn
 zstandard
 seaborn
+folium
 -e .
