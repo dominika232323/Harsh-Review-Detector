@@ -13,4 +13,5 @@ scikit-learn
 zstandard
 seaborn
 folium
+textblob
 -e .
