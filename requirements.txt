@@ -10,4 +10,9 @@ pytest
 python-dotenv
 ruff
 scikit-learn
+zstandard
+seaborn
+folium
+textblob
+langdetect
 -e .
