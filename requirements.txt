@@ -15,4 +15,5 @@ seaborn
 folium
 textblob
 langdetect
+deep-translator
 -e .
