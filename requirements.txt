@@ -16,4 +16,6 @@ folium
 textblob
 langdetect
 deep-translator
+joblib
+wandb
 -e .
