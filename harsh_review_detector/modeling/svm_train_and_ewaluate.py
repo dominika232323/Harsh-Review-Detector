@@ -1,13 +1,12 @@
 import joblib
 import wandb
 
-import seaborn as sns
-from matplotlib import pyplot as plt
+import pandas as pd
 
 from sklearn.compose import ColumnTransformer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.impute import SimpleImputer
-from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score, confusion_matrix
+from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import LinearSVC
@@ -16,11 +15,20 @@ from harsh_review_detector.config import MODELS_DIR
 from harsh_review_detector.modeling.dataset_operations import load_dataset, split_dataset
 
 
+def get_metrics(y_test: pd.Series, y_pred: pd.Series) -> dict[str, float]:
+    return {
+        "f1_score": f1_score(y_test, y_pred),
+        "precision": precision_score(y_test, y_pred),
+        "recall": recall_score(y_test, y_pred),
+        "accuracy": accuracy_score(y_test, y_pred)
+    }
+
+
 if __name__ == "__main__":
     df = load_dataset()
 
     text_column = "comments"
-    numerical_features_columns = ["numerical_review", "sentiment", "review_length"]
+    numerical_features_columns = ["review_length"]
     features_columns = [text_column] + numerical_features_columns
     target_column = "label"
 
@@ -34,7 +42,7 @@ if __name__ == "__main__":
         "svm_class_weight": "balanced"
     }
 
-    wandb.init(project="ium-harsh-reviews", name="svm-with-numeric", config=config)
+    run = wandb.init(project="ium-harsh-reviews", config=config)
 
     preprocessor = ColumnTransformer(
         transformers=[
@@ -55,31 +63,18 @@ if __name__ == "__main__":
     pipeline.fit(X_train, y_train)
     y_pred = pipeline.predict(X_test)
 
-    metrics = {
-        "f1_score": f1_score(y_test, y_pred),
-        "precision": precision_score(y_test, y_pred),
-        "recall": recall_score(y_test, y_pred),
-        "accuracy": accuracy_score(y_test, y_pred)
-    }
+    metrics = get_metrics(y_test, y_pred)
 
     wandb.log(metrics)
+    wandb.log({"confusion_matrix": wandb.plot.confusion_matrix(
+        probs=None,
+        y_true=y_test.tolist(),
+        preds=y_pred.tolist(),
+        class_names=["Not Harsh", "Harsh"]
+    )})
 
-    cm = confusion_matrix(y_test, y_pred)
-    labels = ["Not Harsh", "Harsh"]
-    plt.figure(figsize=(6, 4))
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=labels, yticklabels=labels)
-    plt.xlabel("Predicted")
-    plt.ylabel("True")
-    plt.title("Confusion Matrix")
-    plt.tight_layout()
-    plt.savefig("confusion_matrix.png")
-    wandb.log({"confusion_matrix": wandb.Image("confusion_matrix.png")})
-    plt.close()
-
-    print(metrics)
-
-    timestamp = wandb.run.id
-    joblib.dump(pipeline, MODELS_DIR / f"svm_model_{timestamp}.pkl")
-    wandb.save(f"svm_model_{timestamp}.pkl")
+    run_id = run.id
+    joblib.dump(pipeline, MODELS_DIR / f"svm_model_{run_id}.pkl")
+    wandb.save(f"svm_model_{run_id}.pkl")
 
     wandb.finish()
