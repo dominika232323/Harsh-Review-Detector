@@ -30,3 +30,7 @@ extend-select = ["I"]  # Add import sorting
 known-first-party = ["harsh_review_detector"]
 force-sort-within-sections = true
 
+[tool.mypy]
+check_untyped_defs = true
+ignore_missing_imports = true
+exclude = ["modeling/wandb"]

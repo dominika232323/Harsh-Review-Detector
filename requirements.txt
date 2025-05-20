@@ -16,4 +16,7 @@ folium
 textblob
 langdetect
 deep-translator
+joblib
+wandb
+mypy
 -e .

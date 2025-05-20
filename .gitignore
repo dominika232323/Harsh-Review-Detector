@@ -184,3 +184,10 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Weights and Biases logs
+wandb/
+harsh_review_detector/modeling/wandb/
+
+# Models' weights
+models/

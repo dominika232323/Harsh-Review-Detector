@@ -19,7 +19,6 @@ requirements:
 	
 
 
-
 ## Delete all compiled Python files
 .PHONY: clean
 clean:
@@ -33,12 +32,18 @@ lint:
 	ruff format --check
 	ruff check
 
+
 ## Format source code with ruff
 .PHONY: format
 format:
 	ruff check --fix
 	ruff format
 
+
+## Check type hints with mypy
+.PHONY: mypy
+mypy:
+	mypy harsh_review_detector
 
 
 ## Run tests
@@ -54,12 +59,15 @@ create_environment:
 	@echo ">>> New virtualenv created. Activate with:\nworkon $(PROJECT_NAME)"
 	
 
-
-
 #################################################################################
 # PROJECT RULES                                                                 #
 #################################################################################
 
+
+## Train and ewaluate SVM model
+.PHONY: svm
+svm:
+	python harsh_review_detector/modeling/svm_train_and_ewaluate.py
 
 
 #################################################################################
