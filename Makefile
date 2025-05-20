@@ -67,7 +67,7 @@ create_environment:
 ## Train and ewaluate SVM model
 .PHONY: svm
 svm:
-	python harsh_review_detector/modeling/svm_train_and_ewaluate.py 
+	python harsh_review_detector/modeling/svm_train_and_ewaluate.py
 
 
 #################################################################################
