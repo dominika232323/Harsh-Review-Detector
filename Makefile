@@ -59,12 +59,15 @@ create_environment:
 	@echo ">>> New virtualenv created. Activate with:\nworkon $(PROJECT_NAME)"
 	
 
-
-
 #################################################################################
 # PROJECT RULES                                                                 #
 #################################################################################
 
+
+## Train and ewaluate SVM model
+.PHONY: svm
+svm:
+	python harsh_review_detector/modeling/svm_train_and_ewaluate.py 
 
 
 #################################################################################
