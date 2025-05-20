@@ -24,16 +24,13 @@ def get_metrics(y_test: pd.Series, y_pred: pd.Series) -> dict[str, float]:
     }
 
 
-if __name__ == "__main__":
+def main():
     df = load_dataset()
-
     text_column = "comments"
     numerical_features_columns = ["review_length"]
     features_columns = [text_column] + numerical_features_columns
     target_column = "label"
-
     X_train, X_test, y_train, y_test = split_dataset(df, features_columns, target_column)
-
     config = {
         "model": "SVM",
         "tfidf_max_features": 5000,
@@ -41,9 +38,7 @@ if __name__ == "__main__":
         "svm_C": 1.0,
         "svm_class_weight": "balanced"
     }
-
     run = wandb.init(project="ium-harsh-reviews", config=config)
-
     preprocessor = ColumnTransformer(
         transformers=[
             ("text", TfidfVectorizer(max_features=config["tfidf_max_features"],
@@ -54,17 +49,13 @@ if __name__ == "__main__":
             ]), numerical_features_columns)
         ]
     )
-
     pipeline = Pipeline(steps=[
         ("preprocessing", preprocessor),
         ("classifier", LinearSVC(C=config["svm_C"], class_weight=config["svm_class_weight"]))
     ])
-
     pipeline.fit(X_train, y_train)
     y_pred = pipeline.predict(X_test)
-
     metrics = get_metrics(y_test, y_pred)
-
     wandb.log(metrics)
     wandb.log({"confusion_matrix": wandb.plot.confusion_matrix(
         probs=None,
@@ -72,9 +63,11 @@ if __name__ == "__main__":
         preds=y_pred.tolist(),
         class_names=["Not Harsh", "Harsh"]
     )})
-
     run_id = run.id
     joblib.dump(pipeline, MODELS_DIR / f"svm_model_{run_id}.pkl")
     wandb.save(f"svm_model_{run_id}.pkl")
-
     wandb.finish()
+
+
+if __name__ == "__main__":
+    main()
