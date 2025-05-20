@@ -76,10 +76,10 @@ def main():
 
     config = {
         "model": "SVM",
-        "tfidf_max_features": 5000,
-        "tfidf_ngram_range": (1, 2),
-        "svm_C": 1.0,
-        "svm_class_weight": "balanced"
+        "tfidf_max_features": 8000,
+        "tfidf_ngram_range": (1, 3),
+        "svm_C": 2.0,
+        "svm_class_weight": None
     }
 
     run = wandb.init(project="ium-harsh-reviews", config=config)
