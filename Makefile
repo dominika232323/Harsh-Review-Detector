@@ -19,7 +19,6 @@ requirements:
 	
 
 
-
 ## Delete all compiled Python files
 .PHONY: clean
 clean:
@@ -33,12 +32,18 @@ lint:
 	ruff format --check
 	ruff check
 
+
 ## Format source code with ruff
 .PHONY: format
 format:
 	ruff check --fix
 	ruff format
 
+
+## Check type hints with mypy
+.PHONY: mypy
+mypy:
+	mypy harsh_review_detector
 
 
 ## Run tests
