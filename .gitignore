@@ -186,6 +186,7 @@ cython_debug/
 .pypirc
 
 # Weights and Biases logs
+wandb/
 harsh_review_detector/modeling/wandb/
 
 # Models' weights
