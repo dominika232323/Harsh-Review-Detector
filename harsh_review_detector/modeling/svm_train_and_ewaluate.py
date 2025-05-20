@@ -55,9 +55,13 @@ def get_metrics(y_test: pd.Series, y_pred: pd.Series) -> dict[str, float]:
     }
 
 
-def save_svm_weights(pipeline: ColumnTransformer, run_id: str, directory: Path = MODELS_DIR) -> None:
-    joblib.dump(pipeline, directory / f"svm_model_{run_id}.pkl")
-    wandb.save(f"svm_model_{run_id}.pkl")
+def save_svm_weights(pipeline: ColumnTransformer, run_name: str | None, directory: Path = MODELS_DIR) -> None:
+    model_path = directory / f"svm_model_{run_name}.pkl"
+    joblib.dump(pipeline, model_path)
+
+    artifact = wandb.Artifact(f"svm_model_{run_name}", type="model")
+    artifact.add_file(str(model_path))
+    wandb.log_artifact(artifact)
 
 
 def main():
@@ -95,8 +99,8 @@ def main():
         class_names=["Not Harsh", "Harsh"]
     )})
 
-    run_id = run.id
-    save_svm_weights(pipeline, run_id)
+    run_name = run.name
+    save_svm_weights(pipeline, run_name)
 
     wandb.finish()
 
