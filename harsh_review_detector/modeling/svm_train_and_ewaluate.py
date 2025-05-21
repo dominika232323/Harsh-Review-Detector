@@ -1,3 +1,4 @@
+import itertools
 from pathlib import Path
 from typing import Any
 
@@ -64,25 +65,17 @@ def save_svm_weights(pipeline: ColumnTransformer, run_name: str | None, director
     wandb.log_artifact(artifact)
 
 
-def main():
-    df = load_dataset()
+def run_experiment(
+        config: dict[str, Any],
+        X_train: pd.DataFrame,
+        X_test: pd.DataFrame,
+        y_train: pd.Series,
+        y_test: pd.Series,
+        numerical_features_columns: list[str],
+        text_column: str
+) -> None:
 
-    text_column = "comments"
-    numerical_features_columns = ["review_length"]
-    features_columns = [text_column] + numerical_features_columns
-    target_column = "label"
-
-    X_train, X_test, y_train, y_test = split_dataset(df, features_columns, target_column)
-
-    config = {
-        "model": "SVM",
-        "tfidf_max_features": 8000,
-        "tfidf_ngram_range": (1, 3),
-        "svm_C": 2.0,
-        "svm_class_weight": None
-    }
-
-    run = wandb.init(project="ium-harsh-reviews", config=config)
+    run = wandb.init(project="ium-harsh-review-detector", config=config)
 
     preprocessor = get_preprocessor(config, numerical_features_columns, text_column)
     pipeline = get_pipeline(config, preprocessor)
@@ -99,10 +92,45 @@ def main():
         class_names=["Not Harsh", "Harsh"]
     )})
 
-    run_name = run.name
-    save_svm_weights(pipeline, run_name)
-
+    save_svm_weights(pipeline, run.name)
     wandb.finish()
+
+
+def main():
+    df = load_dataset()
+
+    text_column = "comments"
+    numerical_features_columns = ["review_length"]
+    features_columns = [text_column] + numerical_features_columns
+    target_column = "label"
+
+    X_train, X_test, y_train, y_test = split_dataset(df, features_columns, target_column)
+
+    tfidf_max_features_options = [3000, 5000, 8000, 10000]
+    tfidf_ngram_range_options = [(1, 1), (1, 2), (1, 3), (2, 2)]
+    svm_C_options = [0.5, 1.0, 2.0, 5.0]
+    svm_class_weight_options = [None, "balanced"]
+
+    all_combinations = list(itertools.product(
+        tfidf_max_features_options,
+        tfidf_ngram_range_options,
+        svm_C_options,
+        svm_class_weight_options
+    ))
+
+    for i, (max_features, ngram_range, C, class_weight) in enumerate(all_combinations, 1):
+        config = {
+            "model": "SVM",
+            "tfidf_max_features": max_features,
+            "tfidf_ngram_range": ngram_range,
+            "svm_C": C,
+            "svm_class_weight": class_weight
+        }
+
+        print(f"\nRunning combination {i}/{len(all_combinations)}:")
+        print(f"max_features: {max_features}, ngram_range: {ngram_range}, C: {C}, class_weight: {class_weight}")
+
+        run_experiment(config, X_train, X_test, y_train, y_test, numerical_features_columns, text_column)
 
 
 if __name__ == "__main__":
