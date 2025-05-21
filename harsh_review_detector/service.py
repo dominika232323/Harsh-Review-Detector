@@ -39,6 +39,7 @@ def predict():
     log_entry = {
         "timestamp": str(datetime.now()),
         "review": review_text,
+        "review_length": review_length,
         "prediction": prediction,
         "model_used": model_used,
         "true_label": true_label
