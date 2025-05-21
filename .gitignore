@@ -191,3 +191,6 @@ harsh_review_detector/modeling/wandb/
 
 # Models' weights
 #models/
+
+# Microservice logs
+logs/
