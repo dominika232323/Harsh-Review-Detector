@@ -69,6 +69,12 @@ create_environment:
 svm:
 	python harsh_review_detector/modeling/svm_train_and_ewaluate.py
 
+## Train and ewaluate Naive Bayes model
+.PHONY: nb
+svm:
+	python harsh_review_detector/modeling/naive_bayes_train_and_evaluate.py
+
+
 
 #################################################################################
 # Self Documenting Commands                                                     #
