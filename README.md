@@ -19,6 +19,101 @@ Detecting guests who consistently give overly harsh reviews on the Nocarz bookin
 * `make service` - runs Flask microservice
 * `make simulate_ab` - simulates A/B experiment
 
+## Microservice endpoints
+
+### POST /predict/base-model
+
+* Performs prediction using only the base model
+* Accepts data in JSON format
+* Saves prediction logs
+* Returns the classification result
+
+#### Example of valid requests
+
+
+```
+curl -X POST http://localhost:8080/predict/base-model \
+-H "Content-Type: application/json" \
+-d '{"review": "This apartment was dirty and noisy. Not recommended!"}'
+```
+
+
+
+```
+curl -X POST http://localhost:8080/predict/base-model \
+-H "Content-Type: application/json" \
+-d '{"review": "This apartment was dirty and noisy. Not recommended!", "true_label": 1}'
+```
+
+Returned result for the above requests:
+```
+{"prediction":1}
+```
+
+Label 1 indicates that the provided review is harsh.
+
+### POST /predict/advanced-model
+
+* Performs prediction using only the advanced model
+* Accepts data in JSON format
+* Saves prediction logs
+* Returns the classification result
+
+#### Example of valid requests
+
+
+```
+curl -X POST http://localhost:8080/predict/advanced-model \
+-H "Content-Type: application/json" \
+-d '{"review": "This apartment was dirty and noisy. Not recommended!"}'
+```
+
+
+
+```
+curl -X POST http://localhost:8080/predict/advanced-model \
+-H "Content-Type: application/json" \
+-d '{"review": "This apartment was dirty and noisy. Not recommended!", "true_label": 1}'
+```
+
+Returned result for the above requests:
+```
+{"prediction":1}
+```
+
+Label 1 indicates that the provided review is harsh.
+
+### POST /experiment_ab
+
+* Accepts data in JSON format
+* Automatically assigns the user to one of the experimental groups, using a balanced user distribution between models
+* Saves prediction logs
+* Returns the classification result
+
+#### Example of valid requests
+
+```
+curl -X POST http://localhost:8080/experiment_ab \
+-H "Content-Type: application/json" \
+-d '{"review": "This apartment was dirty and noisy. Not recommended!", "user_id": 2}'
+```
+
+
+
+```
+curl -X POST http://localhost:8080/experiment_ab \
+-H "Content-Type: application/json" \
+-d '{"review": "This apartment was dirty and noisy. Not recommended!", "user_id": 2,
+"true_label": 1}'
+```
+
+Returned result for the above requests:
+```
+{"prediction":1}
+```
+
+Label 1 indicates that the provided review is harsh.
+
 ## Project Organization
 
 ```
