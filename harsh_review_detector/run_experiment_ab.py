@@ -4,11 +4,13 @@ from json import dumps
 from pathlib import Path
 import requests
 import pandas as pd
+import threading
 from tqdm import tqdm
 
 from harsh_review_detector.modeling.naive_bayes_train_and_evaluate import transform_function
 from harsh_review_detector.service_utils import get_log_entry, save_log
 from harsh_review_detector.config import PROCESSED_HOTEL_REVIEWS_DATASET, SERVICE_LOGS, AB_TEST_LOGS
+from harsh_review_detector.service import run_in_background
 
 
 #ENDPOINT = "http://localhost:8080/experiment_ab"
@@ -19,11 +21,12 @@ LABEL_COLUMN = "label"
 
 def save_log(log: str, path = AB_TEST_LOGS) -> None:
     #path.parent.mkdir(parents=True, exist_ok=True)
-    print(log)
     with open(path, "w+", encoding="utf-8") as f:
         f.write(log)
 
 if __name__ == "__main__":
+    threading.Thread(target=run_in_background, daemon=True).start()
+    #run_app()
     df = pd.read_csv(PROCESSED_HOTEL_REVIEWS_DATASET)
 
     network_success_count = 0
@@ -90,8 +93,8 @@ if __name__ == "__main__":
             network_failures.append((idx, "exception", str(e)))
 
 
-    print(f"\nSuccess: {network_success_count}")
-    print(f"Failures: {len(network_failures)}")
+    print(f"Network successes: {network_success_count}")
+    print(f"Network failures: {len(network_failures)}")
     base_string = f"Base model succeeded: {base_sucesses} Base model failed: {base_failures}. Success rate: {base_sucesses}/{base_sucesses + base_failures}\n"
     print(base_string)
     advanced_string = f"Advanced model succeeded: {advanced_sucesses} Base model failed: {advanced_failures}. Success rate: {advanced_sucesses}/{advanced_sucesses + advanced_failures}\n"
