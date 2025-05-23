@@ -6,11 +6,11 @@ import joblib
 import pandas as pd
 from flask import Response, jsonify
 
+from harsh_review_detector.modeling.naive_bayes_train_and_evaluate import transform_function
 from harsh_review_detector.config import SERVICE_LOGS, BASE_MODEL, ADVANCED_MODEL
 
 base_model = joblib.load(BASE_MODEL)
 advanced_model = joblib.load(ADVANCED_MODEL)
-
 
 def predict(data: dict[str, str], model_used: str, user_id: int | None = None) -> tuple[Response, int] | None | Response:
     validated = validate_data(data)

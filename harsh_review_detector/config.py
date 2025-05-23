@@ -21,3 +21,4 @@ ADVANCED_MODEL = MODELS_DIR / "advanced_model.pkl"
 
 LOGS_DIR = PROJ_ROOT / "logs"
 SERVICE_LOGS = LOGS_DIR / "service_log.jsonl"
+AB_TEST_LOGS = LOGS_DIR / "ab_test_log.txt"

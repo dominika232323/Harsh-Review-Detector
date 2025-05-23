@@ -44,11 +44,13 @@ def get_preprocessor(
 def get_pipeline(config: dict[str, Any], preprocessor: ColumnTransformer) -> Pipeline:
     pipeline = Pipeline(steps=[
         ("preprocessing", preprocessor),
-        ("functionTransformer", FunctionTransformer(lambda x: x.toarray(), accept_sparse=True)), 
+        ("functionTransformer", FunctionTransformer(transform_function, accept_sparse=True)), 
         ("classifier", GaussianNB(var_smoothing=config["nb_var_smoothing"]))
     ])
     return pipeline
 
+def transform_function(x):
+    return x.toarray()
 
 def get_metrics(y_test: pd.Series, y_pred: pd.Series) -> dict[str, float]:
     return {

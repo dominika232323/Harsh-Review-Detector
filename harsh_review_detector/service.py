@@ -2,6 +2,7 @@ import random
 
 from flask import Flask, request, jsonify
 
+from harsh_review_detector.modeling.naive_bayes_train_and_evaluate import transform_function
 from harsh_review_detector.service_utils import predict
 
 
