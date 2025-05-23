@@ -1,4 +1,5 @@
 import random
+import logging
 
 from flask import Flask, request, jsonify
 
@@ -48,6 +49,10 @@ def experiment_ab():
 
     return predict(data, model_used, user_id)
 
+def run_in_background():
+    log = logging.getLogger('werkzeug')
+    log.setLevel(logging.ERROR)
+    app.run(host="0.0.0.0", port=8080)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080)
