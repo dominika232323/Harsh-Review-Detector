@@ -13,7 +13,7 @@ RAW_REVIEWS_DATASET = RAW_DATA_DIR / "reviews.csv"
 PROCESSED_REVIEWS_DATASET = PROCESSED_DATA_DIR / "reviews.csv"
 
 MODELS_DIR = PROJ_ROOT / "models"
-BASELINE_MODEL = MODELS_DIR / "baseline_model.pkl"
+BASE_MODEL = MODELS_DIR / "base_model.pkl"
 ADVANCED_MODEL = MODELS_DIR / "advanced_model.pkl"
 
 LOGS_DIR = PROJ_ROOT / "logs"
