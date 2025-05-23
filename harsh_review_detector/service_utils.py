@@ -47,7 +47,7 @@ def get_df_from_data(data: dict[str, str]) -> pd.DataFrame:
     }])
 
 
-def get_log_entry(data: dict[str, str], model_used: str, prediction: int, true_label: int | None, user_id: int | None = None) -> dict[str, str]:
+def get_log_entry(data: dict[str, str], model_used: str, prediction: int, true_label: str | None, user_id: int | None = None) -> dict[str, str | int | None]:
     return {
         "timestamp": str(datetime.now()),
         "model_used": model_used,
@@ -59,7 +59,7 @@ def get_log_entry(data: dict[str, str], model_used: str, prediction: int, true_l
     }
 
 
-def save_log(log_entry: dict[str, str], path: Path = SERVICE_LOGS) -> None:
+def save_log(log_entry: dict[str, str | int | None], path: Path = SERVICE_LOGS) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(path, "a", encoding="utf-8") as f:
