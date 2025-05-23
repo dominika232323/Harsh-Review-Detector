@@ -6,10 +6,23 @@
 
 Detecting guests who consistently give overly harsh reviews on the Nocarz booking platform.
 
+## Available commands
+
+* `make create_environment` - creates Python environment
+* `make requirements` - installs Python dependencies
+* `make clean` - deletes all compiled Python files
+* `make lint` - lints using ruff (use `make format` to do formatting)
+* `make format` - formats source code with ruff
+* `make mypy` - checks type hints with mypy
+* `make svm` - trains and evaluates SVM models for harsh review detection
+* `make nb` - trains and evaluates Naive Bayes models for harsh review detection
+* `make service` - runs Flask microservice
+* `make simulate_ab` - simulates A/B experiment
+
 ## Project Organization
 
 ```
-├── LICENSE            <- Open-source license if one is chosen
+├── LICENSE            <- The MIT License
 ├── Makefile           <- Makefile with convenience commands like `make data` or `make train`
 ├── README.md          <- The top-level README for developers using this project.
 ├── data
