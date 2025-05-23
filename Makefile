@@ -72,15 +72,31 @@ svm:
 
 ## Train and ewaluate Naive Bayes model
 .PHONY: nb
-svm:
+nb:
 	python harsh_review_detector/modeling/naive_bayes_train_and_evaluate.py
-
 
 
 ## Run microservice
 .PHONY: service
 service:
 	python harsh_review_detector/service.py
+
+
+## Simulate experiment A/B
+## Simulate experiment A/B
+.PHONY: simulate_ab
+simulate_ab:
+	@echo "Starting service in background..."
+	@python harsh_review_detector/service.py & \
+		SERVICE_PID=$$!; \
+		echo "Service started with PID $$SERVICE_PID"; \
+		sleep 3; \
+		echo "Running A/B experiment simulation..."; \
+		python harsh_review_detector/simulate_experiment_ab.py; \
+		echo "Stopping service..."; \
+		kill $$SERVICE_PID; \
+		wait $$SERVICE_PID 2>/dev/null; \
+		echo "Done."
 
 
 #################################################################################
