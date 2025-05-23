@@ -18,8 +18,6 @@ Detecting guests who consistently give overly harsh reviews on the Nocarz bookin
 │   ├── processed      <- The final, canonical data sets for modeling.
 │   └── raw            <- The original, immutable data dump.
 │
-├── docs               <- A default mkdocs project; see www.mkdocs.org for details
-│
 ├── models             <- Trained and serialized models, model predictions, or model summaries
 │
 ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
@@ -43,18 +41,21 @@ Detecting guests who consistently give overly harsh reviews on the Nocarz bookin
     │
     ├── __init__.py             <- Makes harsh_review_detector a Python module
     │
+    ├── analyze_ab_log.py
+    │
     ├── config.py               <- Store useful variables and configuration
     │
-    ├── dataset.py              <- Scripts to download or generate data
+    ├── service.py              <- Flask microservice
     │
-    ├── features.py             <- Code to create features for modeling
+    ├── service_utils.py        <- Helper functions for microservice
+    │
+    ├── simulate_experiment_ab.py
     │
     ├── modeling                
-    │   ├── __init__.py 
-    │   ├── predict.py          <- Code to run model inference with trained models          
-    │   └── train.py            <- Code to train models
+    │   ├── dataset_operations.py 
+    │   ├── naive_bayes_train_and_evaluate.py          
+    │   └── svm_train_and_ewaluate.py
     │
-    └── plots.py                <- Code to create visualizations
 ```
 
 --------
