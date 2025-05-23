@@ -46,13 +46,7 @@ mypy:
 	mypy harsh_review_detector
 
 
-## Run tests
-.PHONY: test
-test:
-	python -m pytest tests
-
-
-## Set up Python interpreter environment
+## Set up Python environment
 .PHONY: create_environment
 create_environment:
 	@rm -rf .venv
@@ -82,7 +76,6 @@ service:
 	python harsh_review_detector/service.py
 
 
-## Simulate experiment A/B
 ## Simulate experiment A/B
 .PHONY: simulate_ab
 simulate_ab:
