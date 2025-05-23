@@ -2,7 +2,7 @@ import itertools
 from pathlib import Path
 from typing import Any
 
-#import joblib
+import joblib
 import wandb
 
 import pandas as pd
@@ -61,13 +61,13 @@ def get_metrics(y_test: pd.Series, y_pred: pd.Series) -> dict[str, float]:
     }
 
 
-#def save_svm_weights(pipeline: ColumnTransformer, run_name: str | None, directory: Path = MODELS_DIR) -> None:
-#    model_path = directory / f"svm_model_{run_name}.pkl"
-#    joblib.dump(pipeline, model_path)
-#
-#    artifact = wandb.Artifact(f"svm_model_{run_name}", type="model")
-#    artifact.add_file(str(model_path))
-#    wandb.log_artifact(artifact)
+def save_nb_weights(pipeline: ColumnTransformer, run_name: str | None, directory: Path = MODELS_DIR) -> None:
+    model_path = directory / f"nb_model_{run_name}.pkl"
+    joblib.dump(pipeline, model_path)
+
+    artifact = wandb.Artifact(f"nb_model_{run_name}", type="model")
+    artifact.add_file(str(model_path))
+    wandb.log_artifact(artifact)
 
 
 def run_experiment(
@@ -97,8 +97,7 @@ def run_experiment(
         preds=y_pred.tolist(),
         class_names=["Not Harsh", "Harsh"]
     )})
-
-    #save_svm_weights(pipeline, run.name)
+    save_nb_weights(pipeline, run.name)
     wandb.finish()
 
 
@@ -114,9 +113,7 @@ def main():
 
     tfidf_max_features_options = [3000, 5000, 8000, 10000]
     tfidf_ngram_range_options = [(1, 1), (1, 2), (1, 3), (2, 2)]
-    nb_var_smoothing_options = [1e-11, 1e-10, 1e-9, 1e-8, 1e-7, 1e-6]
-    #svm_C_options = [0.5, 1.0, 2.0, 5.0]
-    #svm_class_weight_options = [None, "balanced"]
+    nb_var_smoothing_options = [1e-11, 1e-10, 1e-9, 1e-8, 1e-7, 1e-6, 1e-5, 1e-4, 1e-3]
 
     all_combinations = list(itertools.product(
         tfidf_max_features_options,
