@@ -1,18 +1,14 @@
 import random
 
-import joblib
-import json
-from datetime import datetime
-
-import pandas as pd
 from flask import Flask, request, jsonify
 
-import harsh_review_detector.service_utils
-from harsh_review_detector.config import BASE_MODEL, ADVANCED_MODEL, SERVICE_LOGS
 from harsh_review_detector.service_utils import predict
 
-base_model = joblib.load(BASE_MODEL)
-advanced_model = joblib.load(ADVANCED_MODEL)
+
+ab_experiment_users = {
+    "advanced-model": [],
+    "base-model": []
+}
 
 app = Flask(__name__)
 
@@ -32,42 +28,24 @@ def predict_base_model():
 def experiment_ab():
     data = request.get_json()
 
-    if not data or "review" not in data:
-        return jsonify({"error": "Missing 'review' field in input"}), 400
+    user_id = data.get("user_id", None)
 
-    review_text = data["review"]
-    review_length = len(review_text)
-    true_label = data.get("true_label", None)
+    if user_id is None:
+        return jsonify({"error": "Missing 'user_id' field in input"}), 400
 
-    model_used = random.choice(["baseline", "advanced"])
-    model = base_model if model_used == "baseline" else advanced_model
+    if user_id in ab_experiment_users["advanced-model"]:
+        model_used = "advanced-model"
+    elif user_id in ab_experiment_users["base-model"]:
+        model_used = "base-model"
+    else:
+        if len(ab_experiment_users["advanced-model"]) <= len(ab_experiment_users["base-model"]):
+            model_used = "advanced-model"
+        else:
+            model_used = "base-model"
 
-    input_df = pd.DataFrame([{
-        "comments": review_text,
-        "review_length": review_length
-    }])
+        ab_experiment_users[model_used].append(user_id)
 
-    prediction = int(harsh_review_detector.service_utils.predict(input_df)[0])
-
-    log_entry = {
-        "timestamp": str(datetime.now()),
-        "model_used": model_used,
-        "review": review_text,
-        "review_length": review_length,
-        "prediction": prediction,
-        "true_label": true_label
-    }
-
-    SERVICE_LOGS.parent.mkdir(parents=True, exist_ok=True)
-
-    with open(SERVICE_LOGS, "a", encoding="utf-8") as f:
-        f.write(json.dumps(log_entry) + "\n")
-
-    return jsonify({
-        "prediction": prediction,
-        "model_used": model_used
-    })
-
+    return predict(data, model_used, user_id)
 
 
 if __name__ == "__main__":
