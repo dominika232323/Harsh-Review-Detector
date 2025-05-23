@@ -19,4 +19,5 @@ deep-translator
 joblib
 wandb
 mypy
+Flask
 -e .
